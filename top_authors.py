@@ -2,6 +2,7 @@
 
 import lxml.etree as ET
 import pickle
+from statistics import median
 
 from pubs import Pub, Author
 
@@ -11,87 +12,106 @@ def parse_authors(pubs):
         for name in pub.authors:
             if name not in authors:
                 authors[name] = Author(name)
-            authors[name].add_publication(pub.venue, pub.year, pub.title)
+            authors[name].add_publication(pub.venue, pub.year, pub.title, pub.authors)
     return authors
-
-author_head = '''<thead>
-<tr>
-  <th>Rank</th>
-  <th>Name</th>
-  <th>Total</th>
-  <th>16-20</th>
-  <th>20</th>
-  <th>19</th>
-  <th>18</th>
-  <th>17</th>
-  <th>16</th>
-  <th>15</th>
-  <th>14</th>
-  <th>13</th>
-  <th>12</th>
-  <th>11</th>
-  <th>10</th>
-  <th>09</th>
-  <th>08</th>
-  <th>07</th>
-  <th>06</th>
-  <th>05</th>
-  <th>04</th>
-  <th>03</th>
-  <th>02</th>
-  <th>01</th>
-  <th>00</th>
-  <th>&lt;00</th>
-</tr>
-</thead>
-'''
-author_entry = '''<tr>
-  <td>{}</td>
-  <td class="name">{}</td>
-  <td>{}</td>
-  {}
-</tr>
-'''
-
-# Max, Slams, Venues, Co-Authors, Avg
 
 def top_authors(authors, title = 'Security Top Authors', tname = 'top-authors.html', fname = 'www/sec-top-authors.html'):
     ranked = {}
+    current_year = 0 # max year we have data of
     for name in authors:
         total = authors[name].get_total()
         if total > 2:
             if total not in ranked:
                 ranked[total] = []
             ranked[total].append(authors[name])
+            if max(authors[name].years.keys()) > current_year:
+                current_year = max(authors[name].years.keys())
+
+    author_entry = '''<tr>
+<td>{}</td>
+<td class="name">{}</td>
+<td>{}</td>
+<td>{}</td>
+<td>{}</td>
+<td>{}</td>
+<td>{}</td>
+<td>{}</td>'''
+    author_head = '''<thead>
+<tr>
+<th>Rank</th>
+<th>Name</th>
+<th>Total</th>
+<th>(A)</th>
+<th>(Rel)</th>'''
+    author_head = author_head + '<th>' + str(current_year-2004) + '-' + str(current_year-2000) + '</th>'
+    author_head = author_head + '''<th>(A5)</th>
+<th>(Rel5)</th>'''
+
+    for year in range(current_year, current_year-21, -1):
+        author_head = author_head + '<th>' + str(year-2000) + '</th>'
+        author_entry = author_entry + '<td>{}</td>'
+    author_head = author_head + '''<th>&lt;00</th>
+</tr>
+</thead>'''
+    author_entry = author_entry + '''<td>{}</td>
+</tr>'''
 
     content = author_head
-
     rank = 1
     for number in sorted(ranked.keys(), reverse = True):
         for author in ranked[number]:
-            yearly = ''
-            for year in range(2020, 1999, -1):
-                if year not in author.years:
-                    yearly += '<td></td>'
-                else:
-                    yearly += '<td>'+str(author.years[year])+'</td>'
+            values = [rank, author.name, number]
+
+            # Calculate median
+            median_data = []
+            median_data5 = []
+            for year in author.pubs_years:
+                median_data = median_data + author.pubs_years[year]
+                if year > current_year-5:
+                    median_data5 = median_data5 +  author.pubs_years[year]
+            med = median(median_data)
+
+            values.append(round(med))
+            values.append('{:.2f}'.format(number/sum(median_data)*number))
+
+            # summary of last 5 years
             recent = 0
             for year in author.years.keys():
-                if year > 2015:
+                if year > current_year-5:
                     recent += author.years[year]
             if recent == 0:
-                yearly = '<td></td>' + yearly
+                values.append('')
             else:
-                yearly = '<td>'+str(recent)+'</td>' + yearly
+                values.append(recent)
+
+            if len(median_data5) != 0:
+                med5 = round(median(median_data5))
+            else:
+                med5 = ''
+            values.append(med5)
+
+            if recent == 0:
+                values.append('')
+            else:
+                values.append('{:.2f}'.format(recent/sum(median_data5)*recent))
+
+            # last 20 years individually
+            for year in range(current_year, current_year-21, -1):
+                if year not in author.years:
+                    values.append('')
+                else:
+                    values.append(author.years[year])
+
+            # add ancient years
             ancient = 0
             for year in author.years.keys():
-                if year < 2000:
+                if year < current_year-10:
                     ancient += author.years[year]
             if ancient == 0:
-                yearly += '<td></td>'
+                values.append('')
             else:
-                yearly += '<td>'+str(ancient)+'</td>'
-            content += author_entry.format(rank, author.name, number, yearly)
+                values.append(ancient)
+            content += author_entry.format(*values)
         rank += len(ranked[number])
 
     template = open(tname, 'r').read()

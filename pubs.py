@@ -12,13 +12,15 @@ class Author():
     def __init__(self, name):
         self.name = name
         self.years = {}
+        self.pubs_years = {}
         self.venues = []
 
-    def add_publication(self, venue, year, title):
+    def add_publication(self, venue, year, title, authors):
         if not year in self.years:
-            self.years[year] = 1
-        else:
-            self.years[year] += 1
+            self.years[year] = 0
+            self.pubs_years[year] = []
+        self.years[year] += 1
+        self.pubs_years[year].append(len(authors))
 
         if not venue in self.venues:
             self.venues.append(venue)
