@@ -4,5 +4,16 @@ dblp.dtd
 dblp-aliases.csv
 
 # Created files
-sec-pubs.pickle
+pubs-sys_arch.pickle
+pubs-sys_db.pickle
+pubs-sys_design.pickle
+pubs-sys_embed.pickle
+pubs-sys_hpc.pickle
+pubs-sys_mes.pickle
+pubs-sys_mob.pickle
+pubs-sys_net.pickle
+pubs-sys_os.pickle
+pubs-sys_pl.pickle
+pubs-sys_se.pickle
+pubs-sys_sec.pickle
 __pycache__/*

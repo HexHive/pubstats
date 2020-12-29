@@ -4,7 +4,7 @@ import lxml.etree as ET
 import pickle
 from statistics import median
 
-from pubs import Pub, Author
+from pubs import Pub, Author, CONFERENCES, AREA_TITLES
 
 def parse_authors(pubs):
     authors = {}
@@ -15,7 +15,7 @@ def parse_authors(pubs):
             authors[name].add_publication(pub.venue, pub.year, pub.title, pub.authors)
     return authors
 
-def top_authors(authors, title = 'Security Top Authors', tname = 'top-authors.html', fname = 'www/sec-top-authors.html'):
+def top_authors(authors, title = 'Security Top Authors', tname = 'top-authors.html', fname = 'docs/top-authors.html'):
     ranked = {}
     current_year = 0 # max year we have data of
     for name in authors:
@@ -121,14 +121,34 @@ def top_authors(authors, title = 'Security Top Authors', tname = 'top-authors.ht
     fout.write(template)
 
 if __name__ == '__main__':
-    # Load pickeled data
-    with open('sec-pubs.pickle', 'rb') as f:
-        pubs = pickle.load(f)
-        f.close()
+    all_pubs = []
+    for area in CONFERENCES:
+        # Load pickeled data
+        with open('pubs-{}.pickle'.format(area), 'rb') as f:
+            pubs = pickle.load(f)
+            f.close()
+            all_pubs += pubs
+
+        # Prepare per-author information
+        authors = parse_authors(pubs)
+        print('Analyzed a total of {} authors'.format(len(authors)))
+
+        # Pretty print HTML
+        top_authors(authors, title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
 
     # Prepare per-author information
-    authors = parse_authors(pubs)
+    authors = parse_authors(all_pubs)
     print('Analyzed a total of {} authors'.format(len(authors)))
 
     # Pretty print HTML
-    top_authors(authors)
+    top_authors(authors, title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys.html')
+
+    content = ''
+    for area in AREA_TITLES:
+        content = content + '<li><a href="./top-authors-' + area + '.html">' + AREA_TITLES[area] + '</a></li>\n'
+    content = content + '<li><a href="./top-authors-sys.html">' + AREA_TITLES[area] + '</a></li>\n'
+    
+    template = open('top-index.html', 'r').read()
+    template = template.replace('XXXCONTENTXXX', content)
+    fout = open('docs/index.html', 'w')
+    fout.write(template)
