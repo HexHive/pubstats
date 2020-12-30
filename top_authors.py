@@ -16,7 +16,7 @@ def parse_authors(pubs):
             authors[name].add_publication(pub.venue, pub.year, pub.title, pub.authors)
     return authors
 
-def top_authors(authors, cons = '', title = 'Security Top Authors', tname = 'top-authors.html', fname = 'docs/top-authors.html'):
+def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/top-authors.html', fname = 'docs/top-authors.html'):
     ranked = {}
     current_year = 0 # max year we have data of
     for name in authors:
@@ -154,7 +154,7 @@ if __name__ == '__main__':
         content = content + '<li><a href="./top-authors-' + area + '.html">' + AREA_TITLES[area] + '</a></li>\n'
     content = content + '<li><a href="./top-authors-sys.html">' + AREA_TITLES[area] + '</a></li>\n'
     
-    template = open('top-index.html', 'r').read()
+    template = open('templates/top-index.html', 'r').read()
     template = template.replace('XXXCONTENTXXX', content)
     template = template.replace('XXXDATEXXX', date.today().strftime("%Y-%m-%d"))
     fout = open('docs/index.html', 'w')
