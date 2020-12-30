@@ -3,6 +3,7 @@
 import lxml.etree as ET
 import pickle
 from statistics import median
+from datetime import date
 
 from pubs import Pub, Author, CONFERENCES, AREA_TITLES
 
@@ -15,7 +16,7 @@ def parse_authors(pubs):
             authors[name].add_publication(pub.venue, pub.year, pub.title, pub.authors)
     return authors
 
-def top_authors(authors, title = 'Security Top Authors', tname = 'top-authors.html', fname = 'docs/top-authors.html'):
+def top_authors(authors, cons = '', title = 'Security Top Authors', tname = 'top-authors.html', fname = 'docs/top-authors.html'):
     ranked = {}
     current_year = 0 # max year we have data of
     for name in authors:
@@ -117,6 +118,8 @@ def top_authors(authors, title = 'Security Top Authors', tname = 'top-authors.ht
     template = open(tname, 'r').read()
     template = template.replace('XXXTITLEXXX', title)
     template = template.replace('XXXCONTENTXXX', content)
+    template = template.replace('XXXDATEXXX', date.today().strftime("%Y-%m-%d"))
+    template = template.replace('XXXTOPCONSXXX', cons)
     fout = open(fname, 'w')
     fout.write(template)
 
@@ -134,14 +137,17 @@ if __name__ == '__main__':
         print('Analyzed a total of {} authors'.format(len(authors)))
 
         # Pretty print HTML
-        top_authors(authors, title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
+        top_authors(authors, cons = ', '.join(CONFERENCES[area]), title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
 
     # Prepare per-author information
     authors = parse_authors(all_pubs)
     print('Analyzed a total of {} authors'.format(len(authors)))
 
     # Pretty print HTML
-    top_authors(authors, title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys.html')
+    allcons = []
+    for area in CONFERENCES:
+        allcons = allcons + CONFERENCES[area]
+    top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys.html')
 
     content = ''
     for area in AREA_TITLES:
@@ -150,5 +156,6 @@ if __name__ == '__main__':
     
     template = open('top-index.html', 'r').read()
     template = template.replace('XXXCONTENTXXX', content)
+    template = template.replace('XXXDATEXXX', date.today().strftime("%Y-%m-%d"))
     fout = open('docs/index.html', 'w')
     fout.write(template)

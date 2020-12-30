@@ -2,45 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="Mathias Payer">
+<meta name="theme-color" content="#563d7c">
 <title>Top Authors, the Systems Circus</title>
-<style>
-#authors
-{
-border-collapse:collapse;
-}
-#authors td, #authors th 
-{
-font-size:1.2em;
-border:1px solid #0a1a46;
-padding:3px 7px 2px 7px;
-}
-#authors th 
-{
-position: -webkit-sticky;
-position: sticky;
-top: 0;
-z-index: 5;
-font-size:1.2em;
-text-align:left;
-padding-top:5px;
-padding-bottom:4px;
-background-color:#090f42;
-color:#fff;
-}
-#authors td
-{
-text-align:right;
-}
-#authors td.name
-{
-text-align:left;
-}
-</style>
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet"/>
+<link href="css/fontawesome.min.css" rel="stylesheet"/>
+<link href="css/academicons.min.css" rel="stylesheet"/>
 </head>
 <body>
-    <h2>Top Authors, the Systems Circus</h2>
+    <main role="main" class="container-fluid">
+    <div class="jumbotron">
+    <h1>Top Authors, the Systems Circus</h1>
+    <h4>Disclaimer</h4>
     <ul>
-        <li><a href="./top-authors-sys_arch.html">Systems: Architecture</a></li>
+        <li>In the spirit of <a href="http://s3.eurecom.fr/~balzarot/notes/top4_2019/">Davide's Software Security Circus</a> this page highlights the system circus, including the system security circus.</li>
+        <li>The focus of these statistics is on authors and top tier publications.</li>
+        <li>The raw data comes from <a href="https://dblp.org/xml/">DBLP</a> with anti-aliasing from <a href="https://raw.githubusercontent.com/emeryberger/CSrankings/gh-pages/dblp-aliases.csv">CSRankings</a></li>
+        <li>All code is available on <a href="https://github.com/HexHive/pubstats">the HexHive GitHub.</a></li>
+        <li>Data was processed on 2020-12-30.</li>
+    </ul>
+    <h4>Individual tables</h4>
+    <ul>
+    <li><a href="./top-authors-sys_arch.html">Systems: Architecture</a></li>
 <li><a href="./top-authors-sys_net.html">Systems: Networks</a></li>
 <li><a href="./top-authors-sys_sec.html">Systems: Security</a></li>
 <li><a href="./top-authors-sys_db.html">Systems: Databases</a></li>
@@ -55,4 +41,6 @@ text-align:left;
 <li><a href="./top-authors-sys.html">Systems: Software Engineering</a></li>
 
     </ul>
+    </div>
+    </main>
 </body>
