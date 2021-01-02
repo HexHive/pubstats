@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import lxml.etree as ET
 import pickle
 from statistics import median
 from datetime import date
