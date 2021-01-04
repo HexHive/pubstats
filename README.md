@@ -18,6 +18,8 @@ Processing happins in two stages:
 
 ## Changelog
 
+* 2020-01-04 new overview table across areas
+* 2020-01-02 added author cliques
 * 2020-12-30 first version with author statistics
 
 
