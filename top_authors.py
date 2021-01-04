@@ -7,10 +7,12 @@ import csv
 
 from pubs import Pub, Author, CONFERENCES, CONFERENCES_SHORT, AREA_TITLES
 
+# break publications (on venue basis) into per-author statistics
 def parse_authors(pubs):
     authors = {}
     # Load aux data from cs rankings first
     aux_data = {}
+    max_year = 0
     with open('csrankings.csv', 'r') as f:
         csvaliases = csv.reader(f)
         for row in csvaliases:
@@ -25,6 +27,7 @@ def parse_authors(pubs):
     with open('pickle/affiliations.pickle', 'rb') as f:
         aux_data2 = pickle.load(f)
         f.close()
+    # parse pubs and split into authors
     for pub in pubs:
         for name in pub.authors:
             if name not in authors:
@@ -35,11 +38,39 @@ def parse_authors(pubs):
                 else:
                     authors[name] = Author(name, ('', '', ''))
             authors[name].add_publication(pub.venue, pub.year, pub.title, pub.authors)
-    return authors
+            if pub.year > max_year:
+                max_year = pub.year
+    return (authors, max_year)
 
-def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/top-authors.html', fname = 'docs/top-authors.html'):
+# aggregate the numbers across all conferences in an area
+# calculate relative statistics, to normalize a given area
+# relative: each publication only counts as 1/n authors
+# normalization: top N authors
+def aggregate_area(authors, max_year, nr_years=20, top_publishers=1, relative=False):
+    max_years = {}
+    for name in authors:
+        for year in authors[name].years:
+            if year < max_year - nr_years:
+                continue
+            if not year in max_years:
+                max_years[year] = []
+            if not relative:
+                max_years[year].append(authors[name].years[year])
+            else:
+                # calculate relative fraction (1/n authors)
+                max_years[year].append(len(authors[name].nr_authors_year[year])/sum(authors[name].nr_authors_year[year]))
+    # aggregate top N values and return yearly medians
+    top_values = {}
+    for year in max_years:
+        top_values[year] = median(sorted(max_years[year], reverse=True)[0:top_publishers])
+    return top_values
+
+
+def top_authors(authors, cons='', title='Top Authors', tname='templates/top-authors.html', fname='docs/top-authors.html'):
     ranked = {}
     current_year = 0 # max year we have data of
+
+    # walk through all authors and sort by class/ranking
     for name in authors:
         total = authors[name].get_total()
         if total > 2:
@@ -68,17 +99,16 @@ def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/to
 <th>(A)</th>
 <th>(Rel)</th>'''
     author_head = author_head + '<th>' + str(current_year-2004) + '-' + str(current_year-2000) + '</th>'
-    author_head = author_head + '''<th>(A5)</th>
-<th>(Rel5)</th>'''
+    author_head = author_head + '<th>(A5)</th><th>(Rel5)</th>'
 
     for year in range(current_year, current_year-21, -1):
         author_head = author_head + '<th>' + str(year-2000) + '</th>'
-        author_entry = author_entry + '<td>{}</td>'
-    author_head = author_head + '''<th>&lt;00</th>
-</tr>
-</thead>'''
-    author_entry = author_entry + '''<td>{}</td>
-</tr>'''
+        author_entry += '<td>{}</td>'
+    author_head += '<th>&lt;00</th>'
+    author_entry += '<td>{}</td>'
+
+    author_head += '</tr></thead>'
+    author_entry += '</tr>'
 
     content = author_head
     rank = 1
@@ -89,10 +119,10 @@ def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/to
             # Calculate median
             median_data = []
             median_data5 = []
-            for year in author.pubs_years:
-                median_data = median_data + author.pubs_years[year]
+            for year in author.nr_authors_year:
+                median_data = median_data + author.nr_authors_year[year]
                 if year > current_year-5:
-                    median_data5 = median_data5 +  author.pubs_years[year]
+                    median_data5 = median_data5 +  author.nr_authors_year[year]
             med = median(median_data)
 
             values.append(round(med))
@@ -148,6 +178,8 @@ def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/to
 
 if __name__ == '__main__':
     all_pubs = []
+    top_values = {}
+    area_authors = {}
     for area in CONFERENCES:
         # Load pickeled data
         with open('pickle/pubs-{}.pickle'.format(area), 'rb') as f:
@@ -156,14 +188,17 @@ if __name__ == '__main__':
             all_pubs += pubs
 
         # Prepare per-author information
-        authors = parse_authors(pubs)
-        print('Analyzed a total of {} authors'.format(len(authors)))
+        authors, max_year = parse_authors(pubs)
+        print('Analyzed a total of {} authors for {}'.format(len(authors), area))
+
+        top_values[area] = aggregate_area(authors, max_year=max_year, top_publishers=10, relative=True)
+        area_authors[area] = authors
 
         # Pretty print HTML
         top_authors(authors, cons = ', '.join(CONFERENCES_SHORT[area]), title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
 
     # Prepare per-author information
-    authors = parse_authors(all_pubs)
+    authors, max_year = parse_authors(all_pubs)
     print('Analyzed a total of {} authors'.format(len(authors)))
 
     # Pretty print HTML
@@ -171,6 +206,21 @@ if __name__ == '__main__':
     for area in CONFERENCES:
         allcons = allcons + CONFERENCES_SHORT[area]
     top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys.html')
+
+    # # normalize across per-area maximum values
+    # for author in authors:
+    #     for area in CONFERENCES:
+    #         if author in area_authors[area]:
+    #             for year in area_authors[area][author].years:
+    #                 if year < max_year-20:
+    #                     continue
+    #                 #nr_pubs = area_authors[area][author].years[year]
+    #                 nr_pubs = len(area_authors[area][author].nr_authors_year[year])/sum(area_authors[area][author].nr_authors_year[year])
+    #                 authors[author].add_norm_area(year, round(nr_pubs/top_values[area][year]*10))
+
+    # for author in authors:
+    #     authors[author].years = authors[author].normalized_pubs
+    # top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys-norm.html', normalize=True)
 
     content = ''
     for area in AREA_TITLES:

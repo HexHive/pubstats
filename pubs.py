@@ -74,16 +74,22 @@ class Author():
     def __init__(self, name, aux_data):
         self.name = name
         self.years = {}
-        self.pubs_years = {}
+        self.nr_authors_year = {}
         self.venues = []
+        self.normalized_pubs = {}
         self.affiliation, self.homepage, self.scholar = aux_data
+
+    def add_norm_area(self, year, fraction):
+        if not year in self.normalized_pubs:
+            self.normalized_pubs[year] = 0
+        self.normalized_pubs[year] += fraction
 
     def add_publication(self, venue, year, title, authors):
         if not year in self.years:
             self.years[year] = 0
-            self.pubs_years[year] = []
+            self.nr_authors_year[year] = []
         self.years[year] += 1
-        self.pubs_years[year].append(len(authors))
+        self.nr_authors_year[year].append(len(authors))
 
         if not venue in self.venues:
             self.venues.append(venue)
