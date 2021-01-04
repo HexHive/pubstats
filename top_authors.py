@@ -3,15 +3,37 @@
 import pickle
 from statistics import median
 from datetime import date
+import csv
 
-from pubs import Pub, Author, CONFERENCES, AREA_TITLES
+from pubs import Pub, Author, CONFERENCES, CONFERENCES_SHORT, AREA_TITLES
 
 def parse_authors(pubs):
     authors = {}
+    # Load aux data from cs rankings first
+    aux_data = {}
+    with open('csrankings.csv', 'r') as f:
+        csvaliases = csv.reader(f)
+        for row in csvaliases:
+            if row[0] == 'alias':
+                continue
+            if row[0].find('[') != -1:
+                name = row[0][0:row[0].find('[')-1]
+            else:
+                name = row[0]
+            aux_data[name] = (row[1], row[2], row[3])
+    # Load aux data as parsed from DBLP (as fallback)
+    with open('pickle/affiliations.pickle', 'rb') as f:
+        aux_data2 = pickle.load(f)
+        f.close()
     for pub in pubs:
         for name in pub.authors:
             if name not in authors:
-                authors[name] = Author(name)
+                if name in aux_data:
+                    authors[name] = Author(name, aux_data[name])
+                elif name in aux_data2:
+                    authors[name] = Author(name, aux_data2[name])
+                else:
+                    authors[name] = Author(name, ('', '', ''))
             authors[name].add_publication(pub.venue, pub.year, pub.title, pub.authors)
     return authors
 
@@ -30,6 +52,7 @@ def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/to
     author_entry = '''<tr>
 <td>{}</td>
 <td class="name">{}</td>
+<td class="name">{}</td>
 <td>{}</td>
 <td>{}</td>
 <td>{}</td>
@@ -40,6 +63,7 @@ def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/to
 <tr>
 <th>Rank</th>
 <th>Name</th>
+<th>Affiliation</th>
 <th>Total</th>
 <th>(A)</th>
 <th>(Rel)</th>'''
@@ -60,7 +84,7 @@ def top_authors(authors, cons = '', title = 'Top Authors', tname = 'templates/to
     rank = 1
     for number in sorted(ranked.keys(), reverse = True):
         for author in ranked[number]:
-            values = [rank, author.name, number]
+            values = [rank, author.name, author.affiliation, number]
 
             # Calculate median
             median_data = []
@@ -136,7 +160,7 @@ if __name__ == '__main__':
         print('Analyzed a total of {} authors'.format(len(authors)))
 
         # Pretty print HTML
-        top_authors(authors, cons = ', '.join(CONFERENCES[area]), title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
+        top_authors(authors, cons = ', '.join(CONFERENCES_SHORT[area]), title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
 
     # Prepare per-author information
     authors = parse_authors(all_pubs)
@@ -145,13 +169,13 @@ if __name__ == '__main__':
     # Pretty print HTML
     allcons = []
     for area in CONFERENCES:
-        allcons = allcons + CONFERENCES[area]
+        allcons = allcons + CONFERENCES_SHORT[area]
     top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys.html')
 
     content = ''
     for area in AREA_TITLES:
         content = content + '<li><a href="./top-authors-' + area + '.html">' + AREA_TITLES[area] + '</a></li>\n'
-    content = content + '<li><a href="./top-authors-sys.html">' + AREA_TITLES[area] + '</a></li>\n'
+    content = content + '<li><a href="./top-authors-sys.html">All systems conferences</a></li>\n'
     
     template = open('templates/top-index.html', 'r').read()
     template = template.replace('XXXCONTENTXXX', content)

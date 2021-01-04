@@ -16,6 +16,7 @@
 # booktitle: IEEE Symposium on Security and Privacy
 
 # check out https://github.com/emeryberger/CSrankings/blob/gh-pages/filter.xq for conference names
+
 CONFERENCES = {
     'sys_arch': ['ASPLOS', 'ISCA', 'MICRO'], # HPCA
     'sys_net': ['SIGCOMM', 'NSDI'],
@@ -29,6 +30,21 @@ CONFERENCES = {
     'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX Annual Technical Conference', 'USENIX Annual Technical Conference, General Track', 'FAST'],
     'sys_pl': ['PLDI', 'POPL'], # ICFP OOPSLA
     'sys_se': ['SIGSOFT FSE', 'ESEC/SIGSOFT FSE', 'ICSE', 'ICSE (1)', 'ICSE (2)'], # ASE ISSTA
+}
+
+CONFERENCES_SHORT = {
+    'sys_arch': ['ASPLOS', 'ISCA', 'MICRO'], # HPCA
+    'sys_net': ['SIGCOMM', 'NSDI'],
+    'sys_sec': ['CCS', 'USENIX Security', 'NDSS', 'Oakland'],
+    'sys_db': ['SIGMOD', 'VLDB'], # ICDE PODS
+    'sys_design': ['DAC', 'ICCAD'],
+    'sys_embed': ['EMSOFT', 'RTAS', 'RTSS'],
+    'sys_hpc': ['HPDC', 'ICS', 'SC'],
+    'sys_mob': ['MobiSys', 'MobiCom', 'SenSys'],
+    'sys_mes': ['IMC', 'SIGMETRICS'],
+    'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX ATC', 'FAST'],
+    'sys_pl': ['PLDI', 'POPL'], # ICFP OOPSLA
+    'sys_se': ['FSE', 'ICSE'], # ASE ISSTA
 }
 
 AREA_TITLES = {
@@ -55,11 +71,12 @@ class Pub():
         #print('{} {} {} {}\n'.format(authors, year, venue, title))
 
 class Author():
-    def __init__(self, name):
+    def __init__(self, name, aux_data):
         self.name = name
         self.years = {}
         self.pubs_years = {}
         self.venues = []
+        self.affiliation, self.homepage, self.scholar = aux_data
 
     def add_publication(self, venue, year, title, authors):
         if not year in self.years:

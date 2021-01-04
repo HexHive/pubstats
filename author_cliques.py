@@ -48,51 +48,44 @@ def parse_graph(authors, num_edges = 10, fname = ''):
                 G.add_edge(author1, author2, weight=authors[author1][author2])
     # break large graph into subgraphs (for disconnected parts)
     sub_graphs = list(nx.connected_component_subgraphs(G))
-    #pos=nx.spring_layout(G, k=5, scale=9, iterations=500)
-    #pos=nx.kamada_kawai_layout(G, scale=7)
-    #nx.draw_networkx_nodes(G, pos)
-    #nx.draw_networkx_labels(G, pos)
-    #nx.draw_networkx_edges(G, pos)
+    # if, insted of sub graphs, we want one graph for all cliques, use the following code:
+    ##pos=nx.spring_layout(G, k=5, scale=9, iterations=500)
+    ##nx.draw_networkx_nodes(G, pos)
+    ##nx.draw_networkx_labels(G, pos)
+    ##nx.draw_networkx_edges(G, pos)
     nr_cliques = len(sub_graphs)
     print('Found {} cliques'.format(nr_cliques))
     x_cliques = ceil(sqrt(nr_cliques))
     y_cliques = ceil(nr_cliques / x_cliques)
     fig, axes = plt.subplots(nrows=x_cliques, ncols=y_cliques, figsize=(20,20))
-    fig.suptitle(fname)
+    #fig.suptitle(fname)
     if (len(sub_graphs) == 1):
         ax = [axes]
     else:
         ax = axes.flatten()
     for i in range(len(sub_graphs)):
+        # create a graph layout based on feedback for each sub graph
         pos=nx.spring_layout(sub_graphs[i], k=0.1, scale=0.6, iterations=80)
         nx.draw_networkx_nodes(sub_graphs[i], pos, ax=ax[i])
         nx.draw_networkx_labels(sub_graphs[i], pos, ax=ax[i])
         nx.draw_networkx_edges(sub_graphs[i], pos, ax=ax[i])
-        ax[i].set_axis_off()
-        #plt.xlim(0, 1.00 * max(xx for xx, yy in pos.values()))
-        #plt.ylim(0, 1.00 * max(yy for xx, yy in pos.values()))
-        #l,r = plt.xlim()
-        #plt.xlim(l-1, r+1)
-        #t, b = plt.ylim()
-        #plt.ylim(t-1, b+1)
+        # adjust borders for sub graph (because we have long lables that spill)
         xmin, xmax, ymin, ymax = ax[i].axis()
         ax[i].set(xlim = (xmin-0.5, xmax+0.5), ylim=(ymin, ymax))
+        ax[i].set_axis_off()
+    # disable axes for blank subplots (if we have remaining space)
     for i in range(len(sub_graphs), x_cliques*y_cliques):
         ax[i].set_axis_off()
     fig.tight_layout()
 
-    #plt.xlim(0, 1.00 * max(xx for xx, yy in pos.values()))
-    #plt.ylim(0, 1.00 * max(yy for xx, yy in pos.values()))
+    # adjust borders for single graph case
     #l,r = plt.xlim()
     #plt.xlim(l-1, r+1)
     #t, b = plt.ylim()
     #plt.ylim(t-1, b+1)
     plt.savefig('docs/'+fname, bbox_inches="tight")
-    #nx.draw_networkx(G)
     #plt.show()
     del fig
-    #exit()
-    #plt.savefig('test.png')
 
 if __name__ == '__main__':
     all_pubs = []
@@ -121,8 +114,8 @@ if __name__ == '__main__':
 
     content = '<div class="row">'
     for area in CONFERENCES:
-        content = content + '<div class="text-center"><img src="./'+area+'.png" width="800px">' + area + ' cliques</img><br/></div>'
-    content = content + '<div class="text-center"><img src="./all.png" width="800px">all cliques</img><br/></div></div>'
+        content = content + '<div class="text-center"><h3>'+area+' cliques</h3><br/><img src="./'+area+'.png" width="800px"/><br/></div>'
+    content = content + '<div class="text-center"><h3>All cliques</h3><br/><img src="./all.png" width="800px"/><br/></div></div>'
     
     template = open('templates/cliques.html', 'r').read()
     template = template.replace('XXXTITLEXXX', 'Author cliques')

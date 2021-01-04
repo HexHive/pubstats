@@ -2,6 +2,7 @@
 dblp.xml.gz
 dblp.dtd
 dblp-aliases.csv
+csrankings.csv
 
 # Created files
 pickle/*
