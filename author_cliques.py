@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
     content = '<div class="row">'
     for area in CONFERENCES:
-        content = content + '<div class="text-center"><h3>'+area+' cliques</h3><br/><img src="./'+area+'.png" width="800px"/><br/></div>'
+        content = content + '<div class="text-center"><h3>Cliques in '+AREA_TITLES[area]+'</h3><br/><img src="./'+area+'.png" width="800px"/><br/></div>'
     content = content + '<div class="text-center"><h3>All cliques</h3><br/><img src="./all.png" width="800px"/><br/></div></div>'
     
     template = open('templates/cliques.html', 'r').read()
