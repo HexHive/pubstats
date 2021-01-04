@@ -11,6 +11,43 @@
 <link href="css/bootstrap.min.css" rel="stylesheet"/>
 <link href="css/fontawesome.min.css" rel="stylesheet"/>
 <link href="css/academicons.min.css" rel="stylesheet"/>
+<style>
+#authors
+{
+border-collapse:collapse;
+}
+#authors td, #authors th 
+{
+font-size:1.2em;
+border:1px solid #0a1a46;
+padding:3px 7px 2px 7px;
+}
+#authors th 
+{
+position: -webkit-sticky;
+position: sticky;
+top: 0;
+z-index: 5;
+font-size:1.2em;
+text-align:left;
+padding-top:5px;
+padding-bottom:4px;
+background-color:#090f42;
+color:#fff;
+}
+#authors tr.light
+{
+color:#bbbb;
+}
+#authors td
+{
+text-align:right;
+}
+#authors td.name
+{
+text-align:left;
+}
+</style>
 </head>
 <body>
     <main role="main" class="container-fluid">
@@ -23,10 +60,25 @@
         <li>All code is available on <a href="https://github.com/HexHive/pubstats">the HexHive GitHub.</a></li>
         <li>Data was processed on XXXDATEXXX.</li>
     </ul>
+    <p>Key motivation for this page is to provide an overview of the systems community, its publications, its authors, and its cliques.</p>
+    <p>The data is sourced from DBLP (for publication data) and CSRankings (for affiliation data). The scripts process the data
+        and create the necessary files for the web page, allowing a fast turnaround whenever new data is added to DBLP.</p>
+    </div><div class="jumbotron">
+    <h4>Area statistics</h4>
+    <ul>
+        <li>Per-area statistics for the major systems conferences.</li>
+        <li>Rows show total papers, maximum and average papers for a single author (max/a and avg/a), and active authors (#a)</li>
+    </ul>
+    </div>
+    <table id="authors" class="sortable">
+    XXXAREASTATSXXX
+    </table>
+    <div class="jumbotron">
     <h4>Individual tables</h4>
     <ul>
     XXXCONTENTXXX
     </ul>
+    </div><div class="jumbotron">
     <h4>Author cliques</h4>
     <ul>
         <li><a href="cliques.html">List of author cliques (based on co-authorship).</a></li>

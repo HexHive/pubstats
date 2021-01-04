@@ -53,13 +53,14 @@ AREA_TITLES = {
     'sys_sec': 'Systems: Security',
     'sys_db': 'Systems: Databases',
     'sys_design': 'Systems: Design',
-    'sys_embed': 'Embedded System',
+    'sys_embed': 'Embedded Systems',
     'sys_hpc': 'Systems: HPC',
     'sys_mob': 'Mobile Systems',
     'sys_mes': 'Systems: Measurements',
     'sys_os': 'Systems: OS',
     'sys_pl': 'Systems: Programming Languages',
     'sys_se': 'Systems: Software Engineering',
+    'sys': 'All Areas'
 }
 
 class Pub():
