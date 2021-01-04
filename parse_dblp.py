@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
 import lxml.etree as ET
+from gzip import GzipFile
 import pickle
 import csv
 
 from pubs import Pub, Author, CONFERENCES
 
-def parse_dblp(dblp = './dblp.xml'):
+def parse_dblp(dblp_file = './dblp.xml.gz'):
     pubs = {}
     for area in CONFERENCES:
         pubs[area] = []
@@ -18,7 +19,8 @@ def parse_dblp(dblp = './dblp.xml'):
     venue = ''
     year = 1900
 
-    for event, elem in ET.iterparse(dblp, events = ('start', 'end',), load_dtd = True):
+    dblp_stream = GzipFile(filename=dblp_file)
+    for event, elem in ET.iterparse(dblp_stream, events = ('start', 'end',), load_dtd = True):
         if event == 'start':
             if elem.tag == 'inproceedings' or elem.tag == 'article':
                 in_pub = True
@@ -71,6 +73,6 @@ if __name__ == '__main__':
 
     # Dump publications into pickle file
     for area in pubs:
-        with open('pubs-{}.pickle'.format(area), 'wb') as f:
+        with open('pickle/pubs-{}.pickle'.format(area), 'wb') as f:
             pickle.dump(pubs[area], f)
             f.close()

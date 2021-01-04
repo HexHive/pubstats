@@ -126,7 +126,7 @@ if __name__ == '__main__':
     all_pubs = []
     for area in CONFERENCES:
         # Load pickeled data
-        with open('pubs-{}.pickle'.format(area), 'rb') as f:
+        with open('pickle/pubs-{}.pickle'.format(area), 'rb') as f:
             pubs = pickle.load(f)
             f.close()
             all_pubs += pubs
