@@ -12,7 +12,7 @@ fresh:
 	# freshen raw data files (checking timestamps)
 	wget -N https://dblp.uni-trier.de/xml/dblp.xml.gz
 	wget -N https://dblp.uni-trier.de/xml/dblp.dtd
-	wget -N https://raw.githubusercontent.com/emeryberger/CSrankings/gh-pages/dblp-aliases.csv
+	#wget -N https://raw.githubusercontent.com/emeryberger/CSrankings/gh-pages/dblp-aliases.csv
 	wget -N https://raw.githubusercontent.com/emeryberger/CSrankings/gh-pages/csrankings.csv
 	mkdir -p pickle
 	mkdir -p docs
