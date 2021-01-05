@@ -69,7 +69,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                 # Process an author affiliation (if available)
                 if len(authors) >= 1:
                     if author_affiliation.find(',') != -1:
-                        author_affiliation = author_affiliation[0:author_affiliation.find(',')-1]
+                        author_affiliation = author_affiliation[0:author_affiliation.find(',')].strip()
                     affiliations[authors[0]] = (author_affiliation, author_homepage, '') # affil, homepage, google scholar
                     author_affiliation = ''
                     author_homepage = ''
