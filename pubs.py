@@ -28,7 +28,7 @@ CONFERENCES = {
     'sys_mob': ['MobiSys', 'MobiCom', 'MOBICOM', 'SenSys'],
     'sys_mes': ['IMC', 'Internet Measurement Conference', 'Proc. ACM Meas. Anal. Comput. Syst.'],
     'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX Annual Technical Conference', 'USENIX Annual Technical Conference, General Track', 'FAST'],
-    'sys_pl': ['PLDI', 'POPL'], # ICFP OOPSLA
+    'sys_pl': ['PLDI', 'POPL', 'ICFP', 'OOPSLA', 'OOPSLA/ECOOP'],
     'sys_se': ['SIGSOFT FSE', 'ESEC/SIGSOFT FSE', 'ICSE', 'ICSE (1)', 'ICSE (2)'], # ASE ISSTA
 }
 
@@ -43,7 +43,7 @@ CONFERENCES_NUMBER = {
     'sys_mob': {},
     'sys_mes': {},
     'sys_os': {},
-    'sys_pl': {'Proc. ACM Program. Lang.' : 'POPL'},
+    'sys_pl': {'Proc. ACM Program. Lang.' : ['POPL', 'OOPSLA', 'ICFP']},
     'sys_se': {}
 }
 
@@ -58,7 +58,7 @@ CONFERENCES_SHORT = {
     'sys_mob': ['MobiSys', 'MobiCom', 'SenSys'],
     'sys_mes': ['IMC', 'SIGMETRICS'],
     'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX ATC', 'FAST'],
-    'sys_pl': ['PLDI', 'POPL'], # ICFP OOPSLA
+    'sys_pl': ['PLDI', 'POPL', 'ICFP', 'OOPSLA'],
     'sys_se': ['FSE', 'ICSE'], # ASE ISSTA
 }
 
