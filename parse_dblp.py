@@ -20,13 +20,16 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
     number = ''
     year = 1900
 
-    # auther affiliations
+    # author affiliations
     affiliations = {}
     all_authors = set() # authors of our selected conferences
     author_homepage = ''
     author_affiliation = ''
     total_affiliations = 0
     in_www = False # flag marking if we're parsing affiliation information
+
+    # author aliases
+    aliases = {}
 
     dblp_stream = GzipFile(filename=dblp_file)
     # Writing streaming XML parsers is fun...
@@ -65,24 +68,30 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                         for author in authors:
                             if not author in all_authors:
                                 all_authors.add(author)
-                in_pub = False
                 total_pub += 1
                 authors = []
                 number = ''
                 title = ''
                 year = 0
                 venue = ''
+                in_pub = False
             elif elem.tag == 'www':
                 # Process an author affiliation (if available)
                 if len(authors) >= 1:
+                    # record affiliation
                     if author_affiliation.find(',') != -1:
                         author_affiliation = author_affiliation[0:author_affiliation.find(',')].strip()
                     affiliations[authors[0]] = (author_affiliation, author_homepage, '') # affil, homepage, google scholar
-                    author_affiliation = ''
-                    author_homepage = ''
-                    authors = []
                     total_affiliations += 1
-                in_pub = False
+                    # does this author have aliases?
+                    if len(authors) > 1:
+                        for i in range(1, len(authors)):
+                            aliases[authors[i]] = authors[0]
+                # clean for next iteration
+                author_affiliation = ''
+                author_homepage = ''
+                authors = []
+                in_www = False
             elem.clear()
 
     # prune authors that have not published at our conferences of interest
@@ -92,17 +101,17 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
             kill_list.append(author)
     for author in kill_list:
         del affiliations[author]
-    return (pubs, affiliations, total_pub, selected_pub, total_affiliations)
+    return (pubs, affiliations, aliases, total_pub, selected_pub, total_affiliations)
 
-def remove_aliases(confs):
-    # parse aliases from csrankins
-    aliases = {}
-    with open('dblp-aliases.csv', 'r') as f:
-        csvaliases = csv.reader(f)
-        for row in csvaliases:
-            if row[0] == 'alias':
-                continue
-            aliases[row[0]] = row[1]
+def remove_aliases(confs, aliases):
+    # parse aliases from CSrankins
+    #aliases = {}
+    #with open('dblp-aliases.csv', 'r') as f:
+    #    csvaliases = csv.reader(f)
+    #    for row in csvaliases:
+    #        if row[0] == 'alias':
+    #            continue
+    #        aliases[row[0]] = row[1]
     # update all publications with aliased authors
     aliases_replaced = 0
     for area in confs:
@@ -111,16 +120,16 @@ def remove_aliases(confs):
                 if pub.authors[i] in aliases:
                     pub.authors[i] = aliases[pub.authors[i]]
                     aliases_replaced += 1
-    print('Replaced {} authors'.format(aliases_replaced))
+    print('Replaced {} aliases'.format(aliases_replaced))
 
 if __name__ == '__main__':
     # Parse security conferences
-    pubs, affiliations, total_pub, selected_pub, total_affiliations = parse_dblp()
+    pubs, affiliations, aliases, total_pub, selected_pub, total_affiliations = parse_dblp()
     print('Selected a grand total of {} out of {} publications'.format(selected_pub, total_pub))
     print('Selected a grand total of {} out of {} authors (with affiliations)'.format(len(affiliations), total_affiliations))
 
     # Remove aliases
-    remove_aliases(pubs)
+    remove_aliases(pubs, aliases)
 
     # Dump publications into pickle file
     for area in pubs:
