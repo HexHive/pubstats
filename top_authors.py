@@ -76,7 +76,7 @@ def parse_authors(pubs):
     return (authors, max_year, top_values)
 
 
-def top_authors(authors, cons='', title='Top Authors', tname='templates/top-authors.html', fname='docs/top-authors.html'):
+def top_authors(authors, cons='', title='Top Authors', tname='templates/top-authors.html', fname='docs/top-authors.html', nr_years=20):
     ranked = {}
     current_year = 0 # max year we have data of
 
@@ -111,10 +111,10 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
     author_head = author_head + '<th>' + str(current_year-2004) + '-' + str(current_year-2000) + '</th>'
     author_head = author_head + '<th>(A5)</th><th>(Rel5)</th>'
 
-    for year in range(current_year, current_year-20, -1):
+    for year in range(current_year, current_year-nr_years, -1):
         author_head = author_head + '<th>' + str(year-2000) + '</th>'
         author_entry += '<td>{}</td>'
-    author_head += '<th>&lt;'+str(current_year-2020)+'</th>'
+    author_head += '<th>&lt;='+str(current_year-2000-nr_years)+'</th>'
     author_entry += '<td>{}</td>'
 
     author_head += '</tr></thead>'
@@ -160,7 +160,7 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
                 values.append('{:.2f}'.format(recent/sum(median_data5)*recent))
 
             # last 20 years individually
-            for year in range(current_year, current_year-21, -1):
+            for year in range(current_year, current_year-nr_years, -1):
                 if year not in author.years:
                     values.append('')
                 else:
@@ -169,7 +169,7 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
             # add ancient years
             ancient = 0
             for year in author.years.keys():
-                if year < current_year-10:
+                if year <= current_year-nr_years:
                     ancient += author.years[year]
             if ancient == 0:
                 values.append('')
@@ -186,13 +186,13 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
     fout = open(fname, 'w')
     fout.write(template)
 
-def stat_table(top_values, max_year):
+def stat_table(top_values, max_year, nr_years=20):
     table_head = '<thead><tr><th>Area</th><th>Total</th>'
     table_entry = '<tr{}><td class="name">{}</td><td>{}</td>'
-    for year in range(max_year, max_year-20, -1):
+    for year in range(max_year, max_year-nr_years, -1):
         table_head += '<th class="name">'+str(year-2000)+'</th>'
         table_entry += '<td>{}</td>'
-    table_head += '<th class="name">&lt;'+str(max_year-2020)+'</th>'
+    table_head += '<th class="name">&lt;'+str(max_year-2000-nr_years)+'</th>'
     table_head += '</tr></thead>'
     table_entry += '<td>{}</td></tr>'
 
