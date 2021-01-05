@@ -16,8 +16,15 @@ Processing happins in two stages:
   and aggregate statistics.
 
 
+## Contributing
+
+Ideas, comments, or improvements are welcome! Please reach out to
+[Mathias Payer](mailto:mathias.payer@nebelwelt.net) to discuss. You can also
+reach out to [@gannimo on Twitter](https://www.twitter.com/gannimo).
+
 ## Changelog
 
+* 2020-01-05 figures for overview page
 * 2020-01-04 new overview table across areas
 * 2020-01-02 added author cliques
 * 2020-12-30 first version with author statistics
