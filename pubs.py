@@ -32,6 +32,21 @@ CONFERENCES = {
     'sys_se': ['SIGSOFT FSE', 'ESEC/SIGSOFT FSE', 'ICSE', 'ICSE (1)', 'ICSE (2)'], # ASE ISSTA
 }
 
+CONFERENCES_NUMBER = {
+    'sys_arch': {},
+    'sys_net': {},
+    'sys_sec': {},
+    'sys_db': {},
+    'sys_design': {},
+    'sys_embed': {},
+    'sys_hpc': {},
+    'sys_mob': {},
+    'sys_mes': {},
+    'sys_os': {},
+    'sys_pl': {'Proc. ACM Program. Lang.' : 'POPL'},
+    'sys_se': {}
+}
+
 CONFERENCES_SHORT = {
     'sys_arch': ['ASPLOS', 'ISCA', 'MICRO'], # HPCA
     'sys_net': ['SIGCOMM', 'NSDI'],

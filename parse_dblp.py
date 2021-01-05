@@ -5,7 +5,7 @@ from gzip import GzipFile
 import pickle
 import csv
 
-from pubs import Pub, Author, CONFERENCES
+from pubs import Pub, Author, CONFERENCES, CONFERENCES_NUMBER
 
 def parse_dblp(dblp_file = './dblp.xml.gz'):
     pubs = {}
@@ -17,6 +17,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
     authors = []
     title = ''
     venue = ''
+    number = ''
     year = 1900
 
     # auther affiliations
@@ -42,6 +43,8 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                 title = elem.text
             elif in_pub and (elem.tag == 'booktitle' or elem.tag == 'journal'):
                 venue = elem.text
+            elif in_pub and elem.tag == 'number':
+                number = elem.text
             elif in_pub and elem.tag == 'year':
                 year = int(elem.text)
             # author is needed both for affiliations and pubs
@@ -56,7 +59,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                     author_affiliation = elem.text
             elif elem.tag == 'inproceedings' or elem.tag == 'article':
                 for area in CONFERENCES:
-                    if venue in CONFERENCES[area]:
+                    if venue in CONFERENCES[area] or (venue in CONFERENCES_NUMBER[area] and number in CONFERENCES_NUMBER[area][venue]):
                         selected_pub += 1
                         pubs[area].append(Pub(venue, title, authors, year))
                         for author in authors:
@@ -65,6 +68,10 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                 in_pub = False
                 total_pub += 1
                 authors = []
+                number = ''
+                title = ''
+                year = 0
+                venue = ''
             elif elem.tag == 'www':
                 # Process an author affiliation (if available)
                 if len(authors) >= 1:
