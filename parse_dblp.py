@@ -4,8 +4,47 @@ import lxml.etree as ET
 from gzip import GzipFile
 import pickle
 import csv
+import re
 
 from pubs import Pub, Author, CONFERENCES, CONFERENCES_NUMBER
+
+def get_nr_pages(pages, title):
+    start = ''
+    end = ''
+    addon = 0
+    # we don't know, so assume it's a paper
+    if pages == '':
+        print('No pages: {}'.format(title))
+        return 6
+    # find from/to delimeter (or assume it's just one page)
+    if pages.find('-') != -1:
+        start = pages[0:pages.find('-')]
+        end = pages[pages.find('-')+1:]
+    else:
+        return 1
+    if pages.find('93g') != -1:
+        print('{} {}'.format(pages, title))
+    # check for format 90:1-90:28 (e.g., used in journals)
+    if start.find(':') != -1:
+        start = start[start.find(':')+1:]
+    if end.find(':') != -1:
+        end = end[end.find(':')+1:]
+    # if we have two ranges, recurse
+    if start.find(',') != -1:
+        addon = get_nr_pages(start[start.find(',')+1:].strip(), title)
+        start = start[0:start.find(',')]
+    if end.find(',') != -1:
+        addon = get_nr_pages(end[end.find(',')+1:].strip(), title)
+        end = end[0:end.find(',')]
+    if not start.isnumeric() or not end.isnumeric():
+        print('Non-numeric characters: "{}" {}'.format(pages, title))
+        start = re.sub('[^0-9]','', start)
+        end = re.sub('[^0-9]','', end)
+    # double check that none of the ranges are empty
+    if start=='' or end=='':
+        print('Single page: "{}" {}'.format(pages, title))
+        return 1
+    return int(end) - int(start) + addon
 
 def parse_dblp(dblp_file = './dblp.xml.gz'):
     pubs = {}
@@ -18,6 +57,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
     title = ''
     venue = ''
     number = ''
+    pages = ''
     year = 1900
 
     # author affiliations
@@ -48,6 +88,8 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                 venue = elem.text
             elif in_pub and elem.tag == 'number':
                 number = elem.text
+            elif in_pub and elem.tag == 'pages':
+                pages = elem.text
             elif in_pub and elem.tag == 'year':
                 year = int(elem.text)
             # author is needed both for affiliations and pubs
@@ -63,15 +105,17 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
             elif elem.tag == 'inproceedings' or elem.tag == 'article':
                 for area in CONFERENCES:
                     if venue in CONFERENCES[area] or (venue in CONFERENCES_NUMBER[area] and number in CONFERENCES_NUMBER[area][venue]):
-                        selected_pub += 1
-                        pubs[area].append(Pub(venue, title, authors, year))
-                        for author in authors:
-                            if not author in all_authors:
-                                all_authors.add(author)
+                        if get_nr_pages(pages, title) >= 6:
+                            selected_pub += 1
+                            pubs[area].append(Pub(venue, title, authors, year))
+                            for author in authors:
+                                if not author in all_authors:
+                                    all_authors.add(author)
                 total_pub += 1
                 authors = []
                 number = ''
                 title = ''
+                pages = ''
                 year = 0
                 venue = ''
                 in_pub = False
