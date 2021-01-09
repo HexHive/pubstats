@@ -8,22 +8,58 @@ import re
 
 from pubs import Pub, Author, CONFERENCES, CONFERENCES_NUMBER
 
-def get_nr_pages(pages, title):
+MIN_PAPER_PAGES = 6
+
+def get_nr_pages(pages, title, venue, year):
     start = ''
     end = ''
     addon = 0
     # we don't know, so assume it's a paper
     if pages == '':
-        print('No pages: {}'.format(title))
-        return 6
+        # special casing
+        if venue == 'USENIX Security Symposium':
+            return MIN_PAPER_PAGES
+        if venue == 'USENIX Annual Technical Conference' and (year==1998 or year==2007 or year==2009 or year==2010 or year==2011 or year==2016 or year==2017 or year==2019):
+            return MIN_PAPER_PAGES
+        if venue == 'USENIX Annual Technical Conference, General Track' and (year==2006):
+            return MIN_PAPER_PAGES
+        if venue == 'FAST' and (year==2003 or year==2005 or year==2007):
+            return MIN_PAPER_PAGES
+        if venue == 'DAC' and (year<=1980):
+            return MIN_PAPER_PAGES
+        if venue == 'OSDI' and (year==2002):
+            return MIN_PAPER_PAGES
+        if venue == 'ICCAD' and (year==2001):
+            return MIN_PAPER_PAGES
+        if venue == 'MobiSys' and (year==2003 or year==2004):
+            return MIN_PAPER_PAGES
+        if venue == 'NDSS':
+            # TODO this includes NDSS keynotes as papers.
+            # The lack of an <ee> tag in the same inproceedings entry may indicate that it's a keynote (checked for 01)
+            return MIN_PAPER_PAGES
+        if venue == 'NSDI' and (year==2005 or year==2006 or year==2007 or year==2011):
+            return MIN_PAPER_PAGES
+        if venue == 'SC' and (year==2009):
+            return MIN_PAPER_PAGES
+        if venue == 'VLDB' and (year==2001 or year==2002):
+            return MIN_PAPER_PAGES
+        print('No pages: "{}" ({}, {})'.format(title, venue, year))
+        return 0
     # find from/to delimeter (or assume it's just one page)
     if pages.find('-') != -1:
         start = pages[0:pages.find('-')]
         end = pages[pages.find('-')+1:]
+        # special casing
+        if venue == 'HPDC' and (year==2001 or year==2002) and end=='':
+            return MIN_PAPER_PAGES
+        if venue == 'ICCAD' and (year==2001) and end=='':
+            return MIN_PAPER_PAGES
+        if venue == 'IEEE Symposium on Security and Privacy' and (year==2004 or year==2003) and end=='':
+            return MIN_PAPER_PAGES
+        if venue == 'ISCA' and (year==2002) and end=='':
+            return MIN_PAPER_PAGES
     else:
         return 1
-    if pages.find('93g') != -1:
-        print('{} {}'.format(pages, title))
     # check for format 90:1-90:28 (e.g., used in journals)
     if start.find(':') != -1:
         start = start[start.find(':')+1:]
@@ -31,18 +67,18 @@ def get_nr_pages(pages, title):
         end = end[end.find(':')+1:]
     # if we have two ranges, recurse
     if start.find(',') != -1:
-        addon = get_nr_pages(start[start.find(',')+1:].strip(), title)
+        addon = get_nr_pages(start[start.find(',')+1:].strip(), title, venue, year)
         start = start[0:start.find(',')]
     if end.find(',') != -1:
-        addon = get_nr_pages(end[end.find(',')+1:].strip(), title)
+        addon = get_nr_pages(end[end.find(',')+1:].strip(), title, venue, year)
         end = end[0:end.find(',')]
     if not start.isnumeric() or not end.isnumeric():
-        print('Non-numeric characters: "{}" {}'.format(pages, title))
+        print('Non-numeric characters: "{}" {} ({}, {})'.format(pages, title, venue, year))
         start = re.sub('[^0-9]','', start)
         end = re.sub('[^0-9]','', end)
     # double check that none of the ranges are empty
     if start=='' or end=='':
-        print('Single page: "{}" {}'.format(pages, title))
+        print('Single page: "{}" {} ({}, {})'.format(pages, title, venue, year))
         return 1
     return int(end) - int(start) + addon
 
@@ -105,7 +141,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
             elif elem.tag == 'inproceedings' or elem.tag == 'article':
                 for area in CONFERENCES:
                     if venue in CONFERENCES[area] or (venue in CONFERENCES_NUMBER[area] and number in CONFERENCES_NUMBER[area][venue]):
-                        if get_nr_pages(pages, title) >= 6:
+                        if get_nr_pages(pages, title, venue, year) >= MIN_PAPER_PAGES:
                             selected_pub += 1
                             pubs[area].append(Pub(venue, title, authors, year))
                             for author in authors:
