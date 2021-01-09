@@ -76,7 +76,7 @@ def parse_authors(pubs):
     return (authors, max_year, top_values)
 
 
-def top_authors(authors, cons='', title='Top Authors', tname='templates/top-authors.html', fname='docs/top-authors.html', nr_years=20):
+def top_authors(authors, cons='', title='Top Authors', tname='templates/top-authors.html', fname='www/top-authors.html', nr_years=20):
     ranked = {}
     current_year = 0 # max year we have data of
 
@@ -286,7 +286,7 @@ def stat_figure(fig_data, title, max_year, average=True, fname=''):
     if fname == '':
         plt.show()
     else:
-        plt.savefig('docs/'+fname, bbox_inches="tight")
+        plt.savefig('www/'+fname, bbox_inches="tight")
     plt.clf()
 
 
@@ -305,7 +305,7 @@ if __name__ == '__main__':
         print('Analyzed a total of {} authors for {}'.format(len(authors), area))
 
         # Pretty print HTML
-        top_authors(authors, cons = ', '.join(CONFERENCES_SHORT[area]), title = AREA_TITLES[area], fname = 'docs/top-authors-{}.html'.format(area))
+        top_authors(authors, cons = ', '.join(CONFERENCES_SHORT[area]), title = AREA_TITLES[area], fname = 'www/top-authors-{}.html'.format(area))
 
     # Prepare per-author information
     authors, max_year, top_values['sys'] = parse_authors(all_pubs)
@@ -315,7 +315,7 @@ if __name__ == '__main__':
     allcons = []
     for area in CONFERENCES:
         allcons = allcons + CONFERENCES_SHORT[area]
-    top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'docs/top-authors-sys.html')
+    top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'www/top-authors-sys.html')
 
     content = ''
     for area in AREA_TITLES:
@@ -327,5 +327,5 @@ if __name__ == '__main__':
     template = template.replace('XXXAREASTATSXXX', stat_table)
     template = template.replace('XXXAREAIMGSXXX', stat_img)
     template = template.replace('XXXDATEXXX', date.today().strftime("%Y-%m-%d"))
-    fout = open('docs/index.html', 'w')
+    fout = open('www/index.html', 'w')
     fout.write(template)

@@ -83,7 +83,7 @@ def parse_graph(authors, num_edges = 10, fname = ''):
     #plt.xlim(l-1, r+1)
     #t, b = plt.ylim()
     #plt.ylim(t-1, b+1)
-    plt.savefig('docs/'+fname, bbox_inches="tight")
+    plt.savefig('www/'+fname, bbox_inches="tight")
     #plt.show()
     del fig
 
@@ -123,5 +123,5 @@ if __name__ == '__main__':
     template = template.replace('XXXSHAREDXXX', str(AREAPUBS))
     template = template.replace('XXXSHARED2XXX', str(ALLPUBS))
     template = template.replace('XXXDATEXXX', date.today().strftime("%Y-%m-%d"))
-    fout = open('docs/cliques.html', 'w')
+    fout = open('www/cliques.html', 'w')
     fout.write(template)

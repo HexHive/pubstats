@@ -6,4 +6,5 @@ csrankings.csv
 
 # Created files
 pickle/*
+www/*
 __pycache__/*

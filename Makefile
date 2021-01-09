@@ -1,4 +1,4 @@
-.PHONY=process topauthors cliques fresh all
+.PHONY=process topauthors cliques fresh all deploy
 
 process: topauthors cliques
 
@@ -15,9 +15,16 @@ fresh:
 	#wget -N https://raw.githubusercontent.com/emeryberger/CSrankings/gh-pages/dblp-aliases.csv
 	wget -N https://raw.githubusercontent.com/emeryberger/CSrankings/gh-pages/csrankings.csv
 	mkdir -p pickle
-	mkdir -p docs
+	mkdir -p www
 	# get the pickling started
 	python3 parse_dblp.py
 
 all: fresh process
 	# updated data and process new data
+
+deploy:
+	for i in www/*.html; do \
+		echo $$i ; \
+		gzip -f -9 -k $$i ; \
+	done
+	unison -batch www/ ssh://ghul.albtraum.org/pubstats/
