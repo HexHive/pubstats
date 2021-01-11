@@ -18,7 +18,7 @@
 # check out https://github.com/emeryberger/CSrankings/blob/gh-pages/filter.xq for conference names
 
 CONFERENCES = {
-    'sys_arch': ['ASPLOS', 'ISCA', 'MICRO'], # HPCA
+    'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
     'sys_sec': ['CCS', 'ACM Conference on Computer and Communications Security', 'USENIX Security', 'USENIX Security Symposium', 'NDSS', 'IEEE Symposium on Security and Privacy'],
     'sys_db': ['SIGMOD Conference', 'VLDB'], # ICDE PODS
@@ -48,7 +48,7 @@ CONFERENCES_NUMBER = {
 }
 
 CONFERENCES_SHORT = {
-    'sys_arch': ['ASPLOS', 'ISCA', 'MICRO'], # HPCA
+    'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
     'sys_sec': ['CCS', 'USENIX Security', 'NDSS', 'Oakland'],
     'sys_db': ['SIGMOD', 'VLDB'], # ICDE PODS

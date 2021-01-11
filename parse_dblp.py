@@ -80,7 +80,7 @@ def get_nr_pages(pages, title, venue, year):
     if start=='' or end=='':
         print('Single page: "{}" {} ({}, {})'.format(pages, title, venue, year))
         return 1
-    return int(end) - int(start) + addon
+    return int(end) - int(start) + addon + 1
 
 def parse_dblp(dblp_file = './dblp.xml.gz'):
     pubs = {}

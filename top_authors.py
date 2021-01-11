@@ -210,7 +210,7 @@ def stat_table(top_values, max_year, nr_years=20):
         ancient_total = 0
         fresh_total = 0
         for year in top_values[area]:
-            if year < max_year-20:
+            if year < max_year-nr_years:
                 ancient_total += top_values[area][year][0]
             else:
                 fresh_total += top_values[area][year][0]
@@ -219,7 +219,7 @@ def stat_table(top_values, max_year, nr_years=20):
         row_avg = [' class="light"', '', 'avg/a']
         row_avg50a = [' class="light"', '', 'avg/a50']
         row_auth = [' class="light"', '', '#a']
-        for year in range(max_year, max_year-21, -1):
+        for year in range(max_year, max_year-nr_years, -1):
             if not year in top_values[area]:
                 top_values[area][year] = ('', '', '', '', '')
             row_tot.append(top_values[area][year][0])
@@ -246,14 +246,14 @@ def stat_table(top_values, max_year, nr_years=20):
                 row_avg50a[i] = 0
             if row_auth[i] == '':
                 row_auth[i] = 0
-        fig_tot[area] = row_tot[4:-1]
-        fig_max[area] = row_max[4:-1]
-        fig_avg50[area] = row_avg50a[4:-1]
-        fig_auth[area] = row_auth[4:-1]
-    stat_figure(fig_tot, 'Total number of publications per year', max_year, fname='stat-tot.png')
-    stat_figure(fig_max, 'Maximum number of publications of an author per year', max_year, average=False, fname='stat-max.png')
-    stat_figure(fig_avg50, 'Average number of publications per year for the top 50 authors', max_year, average=False, fname='stat-avg50.png')
-    stat_figure(fig_auth, 'Average number of active authors per year', max_year, fname='stat-auth.png')
+        fig_tot[area] = row_tot[3:-1]
+        fig_max[area] = row_max[3:-1]
+        fig_avg50[area] = row_avg50a[3:-1]
+        fig_auth[area] = row_auth[3:-1]
+    stat_figure(fig_tot, 'Total number of publications per year', max_year, nr_years, fname='stat-tot.png')
+    stat_figure(fig_max, 'Maximum number of publications of an author per year', max_year, nr_years, average=False, fname='stat-max.png')
+    stat_figure(fig_avg50, 'Average number of publications per year for the top 50 authors', max_year, nr_years, average=False, fname='stat-avg50.png')
+    stat_figure(fig_auth, 'Average number of active authors per year', max_year, nr_years, fname='stat-auth.png')
 
     stat_table = '''<div class="text-center"><img src="stat-tot.png" width="800px"/><br/><br/></div>
 <div class="text-center"><img src="stat-max.png" width="800px"/><br/><br/></div>
@@ -262,9 +262,9 @@ def stat_table(top_values, max_year, nr_years=20):
 '''
     return (content, stat_table)
 
-def stat_figure(fig_data, title, max_year, average=True, fname=''):
+def stat_figure(fig_data, title, max_year, nr_years, average=True, fname=''):
     xaxis = []
-    for year in range(max_year, max_year-20, -1):
+    for year in range(max_year, max_year-nr_years, -1):
         xaxis.append(year)
     plt.figure(figsize=(12, 5))
     plt.title(title)
