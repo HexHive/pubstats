@@ -36,6 +36,7 @@ reach out to [@gannimo on Twitter](https://www.twitter.com/gannimo).
 
 ## Changelog
 
+* 2020-01-11 added HPCA for architecture and adjusted paper length calculation for DAC
 * 2020-01-09 remove tutorials and short papers (by parsing pages data)
 * 2020-01-05 figures for overview page
 * 2020-01-04 new overview table across areas
