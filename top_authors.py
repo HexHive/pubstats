@@ -315,7 +315,16 @@ if __name__ == '__main__':
     allcons = []
     for area in CONFERENCES:
         allcons = allcons + CONFERENCES_SHORT[area]
+
+    # No researchers from Geneva, Basel, St. Gallen, or Fribourg
+    affils = ['ETH Zurich', 'ETH Zürich', 'EPFL', 'Swiss Federal Institute of Technology in Lausanne', 'École Polytechnique Fédérale de Lausanne', 'Università della Svizzera italiana', 'University of Zurich', 'University of Bern']
+    filtered_authors = {}
+    for author in authors:
+        if authors[author].affiliation in affils:
+            filtered_authors[author] = authors[author]
+
     top_authors(authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences)', fname = 'www/top-authors-sys.html')
+    top_authors(filtered_authors, cons = ', '.join(allcons), title = 'Systems (All Top Conferences, CH)', fname = 'www/top-authors-sys-ch.html')
 
     content = ''
     for area in AREA_TITLES:

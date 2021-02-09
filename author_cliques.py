@@ -47,7 +47,7 @@ def parse_graph(authors, num_edges = 10, fname = ''):
                     G.add_node(author2)
                 G.add_edge(author1, author2, weight=authors[author1][author2])
     # break large graph into subgraphs (for disconnected parts)
-    sub_graphs = list(nx.connected_component_subgraphs(G))
+    sub_graphs = list(G.subgraph(c) for c in nx.connected_components(G))
     # if, insted of sub graphs, we want one graph for all cliques, use the following code:
     ##pos=nx.spring_layout(G, k=5, scale=9, iterations=500)
     ##nx.draw_networkx_nodes(G, pos)
