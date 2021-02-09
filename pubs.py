@@ -51,7 +51,7 @@ CONFERENCES_SHORT = {
     'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
     'sys_sec': ['CCS', 'USENIX Security', 'NDSS', 'Oakland'],
-    'sys_db': ['SIGMOD', 'VLDB'], # ICDE PODS
+    'sys_db': ['SIGMOD', 'VLDB', 'ICDE', 'PODS'],
     'sys_design': ['DAC', 'ICCAD'],
     'sys_embed': ['EMSOFT', 'RTAS', 'RTSS'],
     'sys_hpc': ['HPDC', 'ICS', 'SC'],
@@ -59,7 +59,7 @@ CONFERENCES_SHORT = {
     'sys_mes': ['IMC', 'SIGMETRICS'],
     'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX ATC', 'FAST'],
     'sys_pl': ['PLDI', 'POPL', 'ICFP', 'OOPSLA'],
-    'sys_se': ['FSE', 'ICSE'], # ASE ISSTA
+    'sys_se': ['FSE', 'ICSE', 'ASE', 'ISSTA'],
 }
 
 AREA_TITLES = {
