@@ -136,7 +136,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                     author_homepage = elem.text
             elif in_www and elem.tag=='note' and elem.get('type') == 'affiliation':
                 # note: we only record the first affiliation of an author in the list
-                if author_affiliation == '':
+                if author_affiliation == '' and elem.text != None:
                     author_affiliation = elem.text
             elif elem.tag == 'inproceedings' or elem.tag == 'article':
                 for area in CONFERENCES:
