@@ -36,13 +36,13 @@ reach out to [@gannimo on Twitter](https://www.twitter.com/gannimo).
 
 ## Changelog
 
-* 2020-02-09 fixed VLDB conference and added ICDE and PODS for the database
+* 2021-02-09 fixed VLDB conference and added ICDE and PODS for the database
   community; added ASE and ISSTA for the software engineering community
-* 2020-01-11 added HPCA for architecture and adjusted paper length calculation for DAC
-* 2020-01-09 remove tutorials and short papers (by parsing pages data)
-* 2020-01-05 figures for overview page
-* 2020-01-04 new overview table across areas
-* 2020-01-02 added author cliques
+* 2021-01-11 added HPCA for architecture and adjusted paper length calculation for DAC
+* 2021-01-09 remove tutorials and short papers (by parsing pages data)
+* 2021-01-05 figures for overview page
+* 2021-01-04 new overview table across areas
+* 2021-01-02 added author cliques
 * 2020-12-30 first version with author statistics
 
 
