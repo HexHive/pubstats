@@ -1,5 +1,7 @@
 .PHONY=process topauthors cliques fresh all deploy
 
+all: fresh
+
 process: topauthors cliques
 
 topauthors:
@@ -27,4 +29,4 @@ deploy:
 		echo $$i ; \
 		gzip -f -9 -k $$i ; \
 	done
-	unison -batch www/ ssh://ghul.albtraum.org/pubstats/
+	unison -prefer=newer -batch www/ ssh://ghul.albtraum.org/pubstats/
