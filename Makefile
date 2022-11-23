@@ -1,6 +1,7 @@
 .PHONY=process topauthors cliques fresh all deploy
 
-all: fresh
+all: fresh process
+	# updated data and process new data
 
 process: topauthors cliques
 
@@ -20,9 +21,6 @@ fresh:
 	mkdir -p www
 	# get the pickling started
 	python3 parse_dblp.py
-
-all: fresh process
-	# updated data and process new data
 
 deploy:
 	for i in www/*.html; do \
