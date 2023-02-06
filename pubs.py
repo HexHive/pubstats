@@ -21,7 +21,8 @@ CONFERENCES = {
     'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
     'sys_sec': ['CCS', 'ACM Conference on Computer and Communications Security', 'USENIX Security', 'USENIX Security Symposium', 'NDSS', 'IEEE Symposium on Security and Privacy'],
-    'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.', 'ICDE', 'PODS'],
+    #'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.', 'ICDE', 'PODS'],
+    'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.'],
     'sys_design': ['DAC', 'ICCAD'],
     'sys_embed': ['EMSOFT', 'RTAS', 'RTSS'],
     'sys_hpc': ['HPDC', 'ICS', 'SC'],
@@ -29,7 +30,8 @@ CONFERENCES = {
     'sys_mes': ['IMC', 'Internet Measurement Conference', 'Proc. ACM Meas. Anal. Comput. Syst.'],
     'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX Annual Technical Conference', 'USENIX Annual Technical Conference, General Track', 'FAST'],
     'sys_pl': ['PLDI', 'POPL', 'ICFP', 'OOPSLA', 'OOPSLA/ECOOP'],
-    'sys_se': ['SIGSOFT FSE', 'ESEC/SIGSOFT FSE', 'ICSE', 'ICSE (1)', 'ICSE (2)', 'ASE', 'ISSTA'],
+    #'sys_se': ['SIGSOFT FSE', 'ESEC/SIGSOFT FSE', 'ICSE', 'ICSE (1)', 'ICSE (2)', 'ASE', 'ISSTA'],
+    'sys_se': ['SIGSOFT FSE', 'ESEC/SIGSOFT FSE', 'ICSE', 'ICSE (1)', 'ICSE (2)'],
 }
 
 CONFERENCES_NUMBER = {
@@ -51,7 +53,8 @@ CONFERENCES_SHORT = {
     'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
     'sys_sec': ['CCS', 'USENIX Security', 'NDSS', 'Oakland'],
-    'sys_db': ['SIGMOD', 'VLDB', 'ICDE', 'PODS'],
+    #'sys_db': ['SIGMOD', 'VLDB', 'ICDE', 'PODS'],
+    'sys_db': ['SIGMOD', 'VLDB'],
     'sys_design': ['DAC', 'ICCAD'],
     'sys_embed': ['EMSOFT', 'RTAS', 'RTSS'],
     'sys_hpc': ['HPDC', 'ICS', 'SC'],
@@ -59,7 +62,8 @@ CONFERENCES_SHORT = {
     'sys_mes': ['IMC', 'SIGMETRICS'],
     'sys_os': ['SOSP', 'OSDI', 'EuroSys', 'USENIX ATC', 'FAST'],
     'sys_pl': ['PLDI', 'POPL', 'ICFP', 'OOPSLA'],
-    'sys_se': ['FSE', 'ICSE', 'ASE', 'ISSTA'],
+    #'sys_se': ['FSE', 'ICSE', 'ASE', 'ISSTA'],
+    'sys_se': ['FSE', 'ICSE'],
 }
 
 AREA_TITLES = {
