@@ -36,6 +36,8 @@ reach out to [@gannimo on Twitter](https://www.twitter.com/gannimo).
 
 ## Changelog
 
+* 2023-08-21 random bugfixes and conference updates
+* 2023-02-06 adjusted SE/DB conferences based on feedback
 * 2021-02-09 fixed VLDB conference and added ICDE and PODS for the database
   community; added ASE and ISSTA for the software engineering community
 * 2021-01-11 added HPCA for architecture and adjusted paper length calculation for DAC
