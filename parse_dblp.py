@@ -95,6 +95,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
     number = ''
     pages = ''
     year = 1900
+    unhandled_venues = set()
 
     # author affiliations
     affiliations = {}
@@ -147,6 +148,8 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
                             for author in authors:
                                 if not author in all_authors:
                                     all_authors.add(author)
+                    elif venue.find(' (') != -1 and venue[0:venue.find(' (')] in CONFERENCES[area]:
+                        unhandled_venues.add(venue)
                 total_pub += 1
                 authors = []
                 number = ''
@@ -181,6 +184,9 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
             kill_list.append(author)
     for author in kill_list:
         del affiliations[author]
+    for venue in unhandled_venues:
+        print("Unhandled partial match for venue: {}".format(venue))
+
     return (pubs, affiliations, aliases, total_pub, selected_pub, total_affiliations)
 
 def remove_aliases(confs, aliases):

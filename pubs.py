@@ -18,9 +18,9 @@
 # check out https://github.com/emeryberger/CSrankings/blob/gh-pages/filter.xq for conference names
 
 CONFERENCES = {
-    'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
+    'sys_arch': ['ASPLOS', 'ASPLOS (1)', 'ASPLOS (2)', 'ASPLOS (3)', 'ISCA', 'MICRO', 'MICRO (1)', 'MICRO (2)', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
-    'sys_sec': ['CCS', 'ACM Conference on Computer and Communications Security', 'USENIX Security', 'USENIX Security Symposium', 'NDSS', 'IEEE Symposium on Security and Privacy'],
+    'sys_sec': ['CCS', 'ACM Conference on Computer and Communications Security', 'USENIX Security', 'USENIX Security Symposium', 'NDSS', 'IEEE Symposium on Security and Privacy', 'SP'], # note: SP added temporarily because Oakland'23 booktitle
     #'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.', 'ICDE', 'PODS'],
     'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.'],
     'sys_design': ['DAC', 'ICCAD'],
