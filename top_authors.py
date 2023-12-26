@@ -129,14 +129,20 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
             # Calculate median
             median_data = []
             median_data5 = []
+            rel = 0.0
+            rel5 = 0.0
             for year in author.nr_authors_year:
                 median_data = median_data + author.nr_authors_year[year]
+                for nr in author.nr_authors_year[year]:
+                    rel += 1/nr
+                    if year > current_year-5:
+                        rel5 += 1/nr
                 if year > current_year-5:
                     median_data5 = median_data5 +  author.nr_authors_year[year]
             med = median(median_data)
 
             values.append(round(med))
-            values.append('{:.2f}'.format(number/sum(median_data)*number))
+            values.append('{:.2f}'.format(rel))
 
             # summary of last 5 years
             recent = 0
@@ -157,7 +163,7 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
             if recent == 0:
                 values.append('')
             else:
-                values.append('{:.2f}'.format(recent/sum(median_data5)*recent))
+                values.append('{:.2f}'.format(rel5))
 
             # last 20 years individually
             for year in range(current_year, current_year-nr_years, -1):
