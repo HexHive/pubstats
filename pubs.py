@@ -20,7 +20,7 @@
 CONFERENCES = {
     'sys_arch': ['ASPLOS', 'ASPLOS (1)', 'ASPLOS (2)', 'ASPLOS (3)', 'ISCA', 'MICRO', 'MICRO (1)', 'MICRO (2)', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
-    'sys_sec': ['CCS', 'ACM Conference on Computer and Communications Security', 'USENIX Security', 'USENIX Security Symposium', 'NDSS', 'IEEE Symposium on Security and Privacy', 'SP'], # note: SP added temporarily because Oakland'23 booktitle
+    'sys_sec': ['CCS', 'ACM Conference on Computer and Communications Security', 'USENIX Security', 'USENIX Security Symposium', 'NDSS', 'IEEE Symposium on Security and Privacy', 'SP', 'S&P'], # note: SP added temporarily because Oakland'23 booktitle
     #'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.', 'ICDE', 'PODS'],
     'sys_db': ['SIGMOD Conference', 'VLDB', 'PVLDB', 'Proc. VLDB Endow.'],
     'sys_design': ['DAC', 'ICCAD'],
@@ -97,6 +97,7 @@ class Author():
         self.nr_authors_year = {}
         self.venues = []
         self.normalized_pubs = {}
+        self.pubs = {}
         self.affiliation, self.homepage, self.scholar = aux_data
 
     def add_norm_area(self, year, fraction):
@@ -108,8 +109,10 @@ class Author():
         if not year in self.years:
             self.years[year] = 0
             self.nr_authors_year[year] = []
+            self.pubs[year] = []
         self.years[year] += 1
         self.nr_authors_year[year].append(len(authors))
+        self.pubs[year].append(Pub(venue, title, authors, year))
 
         if not venue in self.venues:
             self.venues.append(venue)
