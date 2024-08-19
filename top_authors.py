@@ -90,7 +90,7 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
             if max(authors[name].years.keys()) > current_year:
                 current_year = max(authors[name].years.keys())
 
-    author_entry = '''<tr>
+    author_entry = '''<tr{}>
 <td>{}</td>
 <td class="name">{}</td>
 <td class="name">{}</td>
@@ -122,9 +122,17 @@ def top_authors(authors, cons='', title='Top Authors', tname='templates/top-auth
 
     content = author_head
     rank = 1
+    prev_rank = 1
+    alt_class = ''
     for number in sorted(ranked.keys(), reverse = True):
         for author in ranked[number]:
-            values = [rank, author.name, author.affiliation, number]
+            if prev_rank != rank:
+                prev_rank = rank
+                if alt_class == '':
+                    alt_class = ' class="alt"'
+                else:
+                    alt_class = ''
+            values = [alt_class, rank, author.name, author.affiliation, number]
 
             # Calculate median
             median_data = []
