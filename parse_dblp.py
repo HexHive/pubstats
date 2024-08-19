@@ -37,12 +37,14 @@ def get_nr_pages(pages, title, venue, year):
             # TODO this includes NDSS keynotes as papers.
             # The lack of an <ee> tag in the same inproceedings entry may indicate that it's a keynote (checked for 01)
             return MIN_PAPER_PAGES
-        if venue == 'NSDI' and (year==2005 or year==2006 or year==2007 or year==2011):
+        if venue == 'NSDI' and (year==2005 or year==2006 or year==2007 or year==2011 or year==2024):
             return MIN_PAPER_PAGES
         if venue == 'SC' and (year==2009):
             return MIN_PAPER_PAGES
         if venue == 'VLDB' and (year==2001 or year==2002):
             return MIN_PAPER_PAGES
+        if title.startswith('Front Matter') or title.startswith('Letter from') or title.startswith('Message from') or title.startswith('Session details') or title.startswith('Welcome Message'):
+            return 0
         print('No pages: "{}" ({}, {})'.format(title, venue, year))
         return 0
     # find from/to delimeter (or assume it's just one page)
@@ -59,6 +61,8 @@ def get_nr_pages(pages, title, venue, year):
         if venue == 'ISCA' and (year==2002) and end=='':
             return MIN_PAPER_PAGES
     else:
+        return 1
+    if pages.startswith('i-'):
         return 1
     # check for format 90:1-90:28 (e.g., used in journals)
     if start.find(':') != -1:

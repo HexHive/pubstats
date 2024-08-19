@@ -52,7 +52,7 @@ CONFERENCES_NUMBER = {
 CONFERENCES_SHORT = {
     'sys_arch': ['ASPLOS', 'ISCA', 'MICRO', 'HPCA'],
     'sys_net': ['SIGCOMM', 'NSDI'],
-    'sys_sec': ['CCS', 'USENIX Security', 'NDSS', 'Oakland'],
+    'sys_sec': ['ACM CCS', 'USENIX Security', 'NDSS', 'IEEE SSP (Oakland)'],
     #'sys_db': ['SIGMOD', 'VLDB', 'ICDE', 'PODS'],
     'sys_db': ['SIGMOD', 'VLDB'],
     'sys_design': ['DAC', 'ICCAD'],
