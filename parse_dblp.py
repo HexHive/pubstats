@@ -23,6 +23,8 @@ def get_nr_pages(pages, title, venue, year):
             return MIN_PAPER_PAGES
         if venue == 'USENIX Annual Technical Conference, General Track' and (year==2006):
             return MIN_PAPER_PAGES
+        if venue == 'USENIX ATC' and (year==2011):
+            return MIN_PAPER_PAGES
         if venue == 'FAST' and (year==2003 or year==2005 or year==2007):
             return MIN_PAPER_PAGES
         if venue == 'DAC' and (year<=1980):
