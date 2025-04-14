@@ -45,7 +45,7 @@ CONFERENCES_NUMBER = {
     'sys_mob': {},
     'sys_mes': {},
     'sys_os': {},
-    'sys_pl': {'Proc. ACM Program. Lang.' : ['POPL', 'OOPSLA', 'ICFP']},
+    'sys_pl': {'Proc. ACM Program. Lang.' : ['POPL', 'OOPSLA', 'OOPSLA1', 'OOPSLA2', 'ICFP']},
     'sys_se': {}
 }
 
