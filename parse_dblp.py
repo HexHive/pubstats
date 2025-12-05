@@ -10,7 +10,7 @@ from pubs import Pub, Author, CONFERENCES, CONFERENCES_NUMBER
 
 MIN_PAPER_PAGES = 6
 
-def get_nr_pages(pages, title, venue, year):
+def get_nr_pages(pages, title, venue, year, onepage_venues):
     start = ''
     end = ''
     addon = 0
@@ -19,17 +19,17 @@ def get_nr_pages(pages, title, venue, year):
         # special casing
         if venue == 'USENIX Security Symposium':
             return MIN_PAPER_PAGES
-        if venue == 'USENIX Annual Technical Conference' and (year==1998 or year==2007 or year==2009 or year==2010 or year==2011 or year==2016 or year==2017 or year==2019):
+        if (venue == 'USENIX Annual Technical Conference' or venue=='USENIX ATC') and (year==1998 or year==2007 or year==2009 or year==2010 or year==2011 or year==2016 or year==2017 or year==2019 or year==2020 or year==2022):
             return MIN_PAPER_PAGES
-        if venue == 'USENIX Annual Technical Conference, General Track' and (year==2006):
-            return MIN_PAPER_PAGES
-        if venue == 'USENIX ATC' and (year==2011):
+        if (venue == 'USENIX Annual Technical Conference, General Track' or venue=='USENIX ATC, General Track') and (year==2006):
             return MIN_PAPER_PAGES
         if venue == 'FAST' and (year==2003 or year==2005 or year==2007):
             return MIN_PAPER_PAGES
         if venue == 'DAC' and (year<=1980):
             return MIN_PAPER_PAGES
-        if venue == 'OSDI' and (year==2002):
+        if venue == 'OSDI' and (year==2002 or year==2018 or year==2021):
+            return MIN_PAPER_PAGES
+        if venue == 'SOSP' and (year==1967):
             return MIN_PAPER_PAGES
         if venue == 'ICCAD' and (year==2001):
             return MIN_PAPER_PAGES
@@ -41,7 +41,7 @@ def get_nr_pages(pages, title, venue, year):
             return MIN_PAPER_PAGES
         if venue == 'NSDI' and (year==2005 or year==2006 or year==2007 or year==2011 or year==2024):
             return MIN_PAPER_PAGES
-        if venue == 'SC' and (year==2009):
+        if venue == 'SC' and (year==2009 or year==2024):
             return MIN_PAPER_PAGES
         if venue == 'VLDB' and (year==2001 or year==2002):
             return MIN_PAPER_PAGES
@@ -58,11 +58,27 @@ def get_nr_pages(pages, title, venue, year):
             return MIN_PAPER_PAGES
         if venue == 'ICCAD' and (year==2001) and end=='':
             return MIN_PAPER_PAGES
-        if venue == 'IEEE Symposium on Security and Privacy' and (year==2004 or year==2003) and end=='':
+        if (venue == 'IEEE Symposium on Security and Privacy' or venue=='S&P') and (year==2004 or year==2003) and end=='':
             return MIN_PAPER_PAGES
         if venue == 'ISCA' and (year==2002) and end=='':
             return MIN_PAPER_PAGES
     else:
+        # true single page where the page range is just a single number
+        # most times, these are posters but sometimes the paper is misclassified
+        if venue == 'FAST' and (year==2012):
+            return MIN_PAPER_PAGES
+        if venue == 'SIGSOFT FSE' and (year==2012):
+            return MIN_PAPER_PAGES
+        if venue == 'SC': # SC gives paper number, not page range for years 2000...2024
+            return MIN_PAPER_PAGES
+        if venue == 'DAC': # DAC gives paper number, not page range for years 2000...2024
+            return MIN_PAPER_PAGES
+        #print('Single page: "{}" {} ({}, {})'.format(pages, title, venue, year))
+        venyr = venue + '-' + str(year)
+        if venyr in onepage_venues:
+            onepage_venues[venyr] += 1
+        else:
+            onepage_venues[venyr] = 1
         return 1
     if pages.startswith('i-'):
         return 1
@@ -73,17 +89,22 @@ def get_nr_pages(pages, title, venue, year):
         end = end[end.find(':')+1:]
     # if we have two ranges, recurse
     if start.find(',') != -1:
-        addon = get_nr_pages(start[start.find(',')+1:].strip(), title, venue, year)
+        addon = get_nr_pages(start[start.find(',')+1:].strip(), title, venue, year, onepage_venues)
         start = start[0:start.find(',')]
     if end.find(',') != -1:
-        addon = get_nr_pages(end[end.find(',')+1:].strip(), title, venue, year)
+        addon = get_nr_pages(end[end.find(',')+1:].strip(), title, venue, year, onepage_venues)
         end = end[0:end.find(',')]
     if not start.isnumeric() or not end.isnumeric():
         print('Non-numeric characters: "{}" {} ({}, {})'.format(pages, title, venue, year))
         start = re.sub('[^0-9]','', start)
         end = re.sub('[^0-9]','', end)
-    # double check that none of the ranges are empty
+    # double check that none of the ranges are empty, if so this could be an issue
     if start=='' or end=='':
+        venyr = venue + '-' + str(year)
+        if venyr in onepage_venues:
+            onepage_venues[venyr] += 1
+        else:
+            onepage_venues[venyr] = 1
         print('Single page: "{}" {} ({}, {})'.format(pages, title, venue, year))
         return 1
     return int(end) - int(start) + addon + 1
@@ -113,6 +134,9 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
 
     # author aliases
     aliases = {}
+
+    # venues/year tuples with one page papers
+    onepage_venues = {}
 
     dblp_stream = GzipFile(filename=dblp_file)
     # Writing streaming XML parsers is fun...
@@ -148,7 +172,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
             elif elem.tag == 'inproceedings' or elem.tag == 'article':
                 for area in CONFERENCES:
                     if venue in CONFERENCES[area] or (venue in CONFERENCES_NUMBER[area] and number in CONFERENCES_NUMBER[area][venue]):
-                        if get_nr_pages(pages, title, venue, year) >= MIN_PAPER_PAGES:
+                        if get_nr_pages(pages, title, venue, year, onepage_venues) >= MIN_PAPER_PAGES:
                             selected_pub += 1
                             pubs[area].append(Pub(venue, title, authors, year))
                             for author in authors:
@@ -192,6 +216,9 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
         del affiliations[author]
     for venue in unhandled_venues:
         print("Unhandled partial match for venue: {}".format(venue))
+    for venue in onepage_venues:
+        if onepage_venues[venue] > 10:
+            print('{}: {} papers with one page.'.format(venue, onepage_venues[venue]))
 
     return (pubs, affiliations, aliases, total_pub, selected_pub, total_affiliations)
 
