@@ -27,4 +27,4 @@ deploy:
 		echo $$i ; \
 		gzip -f -9 -k $$i ; \
 	done
-	unison -prefer=newer -batch www/ ssh://ghul.albtraum.org/pubstats/
+	unison -prefer=newer -batch www/ ssh://vault23.nebelwelt.net/pubstats/
