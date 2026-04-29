@@ -10,7 +10,7 @@ from pubs import Pub, Author, CONFERENCES, CONFERENCES_NUMBER
 
 MIN_PAPER_PAGES = 6
 
-def get_nr_pages(pages, title, venue, year, onepage_venues):
+def get_nr_pages(pages, title, venue, year, onepage_venues, number = ''):
     start = ''
     end = ''
     addon = 0
@@ -49,6 +49,12 @@ def get_nr_pages(pages, title, venue, year, onepage_venues):
             return 0
         print('No pages: "{}" ({}, {})'.format(title, venue, year))
         return 0
+    # special handling for EMSOFT that started publisihing papers as special issues, in part, in journals
+    if venue in ('ACM Trans. Embedded Comput. Syst.', 'ACM Trans. Embed. Comput. Syst.'):
+        if number == '5s' and year in (2017, 2019, 2021, 2023, 2025):
+            return MIN_PAPER_PAGES
+        else:
+            return 0
     # find from/to delimeter (or assume it's just one page)
     if pages.find('-') != -1:
         start = pages[0:pages.find('-')]
@@ -89,10 +95,10 @@ def get_nr_pages(pages, title, venue, year, onepage_venues):
         end = end[end.find(':')+1:]
     # if we have two ranges, recurse
     if start.find(',') != -1:
-        addon = get_nr_pages(start[start.find(',')+1:].strip(), title, venue, year, onepage_venues)
+        addon = get_nr_pages(start[start.find(',')+1:].strip(), title, venue, year, onepage_venues, number)
         start = start[0:start.find(',')]
     if end.find(',') != -1:
-        addon = get_nr_pages(end[end.find(',')+1:].strip(), title, venue, year, onepage_venues)
+        addon = get_nr_pages(end[end.find(',')+1:].strip(), title, venue, year, onepage_venues, number)
         end = end[0:end.find(',')]
     if not start.isnumeric() or not end.isnumeric():
         print('Non-numeric characters: "{}" {} ({}, {})'.format(pages, title, venue, year))
@@ -172,7 +178,7 @@ def parse_dblp(dblp_file = './dblp.xml.gz'):
             elif elem.tag == 'inproceedings' or elem.tag == 'article':
                 for area in CONFERENCES:
                     if venue in CONFERENCES[area] or (venue in CONFERENCES_NUMBER[area] and number in CONFERENCES_NUMBER[area][venue]):
-                        if get_nr_pages(pages, title, venue, year, onepage_venues) >= MIN_PAPER_PAGES:
+                        if get_nr_pages(pages, title, venue, year, onepage_venues, number) >= MIN_PAPER_PAGES:
                             selected_pub += 1
                             pubs[area].append(Pub(venue, title, authors, year))
                             for author in authors:
